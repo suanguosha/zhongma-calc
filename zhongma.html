@@ -31,7 +31,8 @@
                   arr.push((card <= 13) ? parseInt(card): toValue(card));
               }
           });
-          //console.log(arr);
+          console.log("original pool is");
+          console.log(arr);
           findCombos(arr);
       }
       //poker card letter to integer
@@ -77,7 +78,7 @@
               for (let i = 0; i < data.length; i++){
                   insertable.push(data[i]);
               }
-              //console.log(insertable);
+              console.log(insertable);
               combos.push(insertable);
               return;
           }
@@ -100,15 +101,13 @@
 
       //Called after getting the array from textarea
       function findCombos(arr) {
-          //.log("arr is: ");
-          //console.log(arr);
           let i;
           for ( i = arr.length-1; i > 0; i--){
-              //console.log("长度为"+i+"的combo有：");
+              console.log("长度为"+i+"的combo有：");
               printCombination(arr, arr.length, i);
           }
-          //console.log("combos is: ");
-          //console.log(combos);
+/*          console.log("开始findPairs，现在combos长这样");
+          console.log(combos);*/
           findPairs();
       }
 
@@ -117,6 +116,9 @@
           for (let i = 0; i < combos.length; i++){
               for (let j = i+1; j < combos.length; j++){
                   if (sum(combos[i]) === sum(combos[j])){
+                      console.log("找到和相同的combo了，他们分别是");
+                      console.log(combos[i]);
+                      console.log(combos[j]);
                       //eliminate duplicates
                       let pair1 = combos[i];
                       let pair2 = combos[j];
@@ -127,30 +129,36 @@
                           return element === origin[index];
                       });
 
-                      let b = 0, c = 0, is_subarray = false;
+                      let b = 0, c = 0, cIndex = 0, is_subarray = false;
                       // Traverse both arrays simultaneously
+                      console.log("concat array长这样");
+                      console.log(concat);
+                      console.log("origin array长这样");
+                      console.log(origin);
                       while (b < origin.length && c < concat.length) {
-                          // If element matches
-                          // increment both pointers
+                          // If element matches, increment both pointers
                           if (origin[b] === concat[c]) {
                               b++;
                               c++;
-                              // If array B is completely
-                              // traversed
+                              cIndex++;
+                              // If concat array is completely traversed
                               if (c === concat.length){
+                                  console.log("is_subarray set to true");
                                   is_subarray = true;
                               }
                           } else {
-                              b++;
-                              c = 0;
+                              if(origin[b] !== concat[cIndex]){  //fix when having duplicates of same value
+                                  b++;
+                              }
+                              c = cIndex;
                           }
                       }
-
+                      console.log("is_subarrray?: " + is_subarray);
                       if (is_same || is_subarray){
-                          pairs.push("第一组：");
-                          pairs.push(combos[i]);
-                          pairs.push("第二组：");
-                          pairs.push(combos[j]);
+                          pairs.push("第一组:");
+                          pairs.push(toLetter(combos[i]));  //11,12,13,1 = JQKA
+                          pairs.push("第二组:");
+                          pairs.push(toLetter(combos[j]));
                           pairs.push("============");
                       }
                   }
@@ -159,6 +167,29 @@
           document.getElementById("output").value = pairs.join("\n");
       }
 
+      function toLetter(combo){
+          let i;
+          let toLetter = [];
+          for (i = 0; i < combo.length; i++){
+              toLetter.push((combo[i] === 1 || combo[i] === 11 || combo[i] === 12 || combo[i] === 13) ? transformLetter(combo[i]): combo[i]);
+          }
+          return toLetter;
+      }
+
+      function transformLetter(num){
+          switch (num){
+              case 1:
+                  return 'A';
+              case 11:
+                  return 'J';
+              case 12:
+                  return 'Q';
+              case 13:
+                  return 'K';
+              default:
+                  return alert(num  + "不是正常卡牌数字");
+          }
+      }
       //find sum of a subarray
       function sum(arr){
           let sum = 0;
