@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>三国杀-钟妈计算器</title>
+  <style>
+    body{
+      background:url(https://www.sanguosha.com/static/pc/dist/img/bg16.jpg?v=20190131) center top no-repeat;
+    }
+    #inputArea {
+      left: 0;
+      margin-top: -100px;
+      position: absolute;
+      text-align: center;
+      top: 30%;
+      width: 100%;
+      font-size: 30px;
+    }
+  </style>
+  <script>
+      var combos = [];
+      var arr = [];
+      function calculate(){
+          combos = [];
+          arr = [];
+          document.getElementById("output").style.display = "inline";
+          let str = document.getElementById("input").value;
+          let pool = str.split(" ");
+          pool.forEach(function(card) {
+              if (card !== ''){
+                  arr.push((card <= 13) ? parseInt(card): toValue(card));
+              }
+          });
+          //console.log(arr);
+          findCombos(arr);
+      }
+      //poker card letter to integer
+      function toValue(card){
+          switch (card){
+              case "j":
+              case "J":
+                  return 11;
+              case "q":
+              case "Q":
+                  return 12;
+              case "k":
+              case "K":
+                  return 13;
+              case "a":
+              case "A":
+                  return 1;
+              default:
+                  return alert(card + "不是正常卡牌数字");
+          }
+      }
+
+      // Prints all combinations of size r in arr[] of size n. This function mainly uses combinationUtil()
+      function printCombination(arr, n, r){
+          // A temporary array to store all combination one by one
+          var data = [];
+
+          // Print all combination using temporary array 'data'
+          combinationUtil(arr, n, r, 0, data, 0);
+      }
+
+      /* arr[]  ---> Input Array
+         n      ---> Size of input array
+         r      ---> Size of a combination to be printed
+         index  ---> Current index in data[]
+         data[] ---> Temporary array to store current combination
+         i      ---> index of current element in arr[]     */
+      function combinationUtil(arr, n, r, index, data, i) {
+          // Current combination is ready, print it
+          if (index === r) {
+              //make combo array local and insert sum
+              let insertable = [];
+              for (let i = 0; i < data.length; i++){
+                  insertable.push(data[i]);
+              }
+              //console.log(insertable);
+              combos.push(insertable);
+              return;
+          }
+
+          // When no more elements are there to put in data[]
+          if (i >= n){
+              return;
+          }
+
+          // current is included, put next at next location
+          data[index] = arr[i];
+
+          combinationUtil(arr, n, r, index + 1, data, i + 1);
+
+          // current is excluded, replace it with next
+          // (Note that i+1 is passed, but index is not
+          // changed)
+          combinationUtil(arr, n, r, index, data, i + 1);
+      }
+
+      //Called after getting the array from textarea
+      function findCombos(arr) {
+          //.log("arr is: ");
+          //console.log(arr);
+          let i;
+          for ( i = arr.length-1; i > 0; i--){
+              //console.log("长度为"+i+"的combo有：");
+              printCombination(arr, arr.length, i);
+          }
+          //console.log("combos is: ");
+          //console.log(combos);
+          findPairs();
+      }
+
+      function findPairs(){
+          var pairs = [];
+          for (let i = 0; i < combos.length; i++){
+              for (let j = i+1; j < combos.length; j++){
+                  if (sum(combos[i]) === sum(combos[j])){
+                      //eliminate duplicates
+                      let pair1 = combos[i];
+                      let pair2 = combos[j];
+                      //console.log(pair1,pair2);
+                      let concat = pair1.concat(pair2).sort();
+                      let origin = arr.sort();
+                      let is_same = concat.length === origin.length && concat.every(function(element, index) {
+                          return element === origin[index];
+                      });
+
+                      let b = 0, c = 0, is_subarray = false;
+                      // Traverse both arrays simultaneously
+                      while (b < origin.length && c < concat.length) {
+                          // If element matches
+                          // increment both pointers
+                          if (origin[b] === concat[c]) {
+                              b++;
+                              c++;
+                              // If array B is completely
+                              // traversed
+                              if (c === concat.length){
+                                  is_subarray = true;
+                              }
+                          } else {
+                              b++;
+                              c = 0;
+                          }
+                      }
+
+                      if (is_same || is_subarray){
+                          pairs.push("第一组：");
+                          pairs.push(combos[i]);
+                          pairs.push("第二组：");
+                          pairs.push(combos[j]);
+                          pairs.push("============");
+                      }
+                  }
+              }
+          }
+          document.getElementById("output").value = pairs.join("\n");
+      }
+
+      //find sum of a subarray
+      function sum(arr){
+          let sum = 0;
+          let i;
+          for (i = 0; i < arr.length; i ++){
+              sum += arr[i];
+          }
+          return sum;
+      }
+  </script>
+</head>
+<body>
+<div id="inputArea">
+  <p>牌号请用空格隔开<br>JQKA用数字/字母都行</p>
+  <textarea id="input" rows="2" cols="50"></textarea><br>
+  <button style="height: 40px;width: 60px" onclick="calculate()">计算</button><br>
+  <textarea id="output" rows="20" cols="50" style="display:none;"></textarea><br>
+</div>
+</body>
+</html>
