@@ -31,8 +31,8 @@
                   arr.push((card <= 13) ? parseInt(card): toValue(card));
               }
           });
-          console.log("original pool is");
-          console.log(arr);
+          //console.log("original pool is");
+          //console.log(arr);
           findCombos(arr);
       }
       //poker card letter to integer
@@ -78,7 +78,7 @@
               for (let i = 0; i < data.length; i++){
                   insertable.push(data[i]);
               }
-              console.log(insertable);
+              //console.log(insertable);
               combos.push(insertable);
               return;
           }
@@ -103,7 +103,7 @@
       function findCombos(arr) {
           let i;
           for ( i = arr.length-1; i > 0; i--){
-              console.log("长度为"+i+"的combo有：");
+              //console.log("长度为"+i+"的combo有：");
               printCombination(arr, arr.length, i);
           }
 /*          console.log("开始findPairs，现在combos长这样");
@@ -116,9 +116,9 @@
           for (let i = 0; i < combos.length; i++){
               for (let j = i+1; j < combos.length; j++){
                   if (sum(combos[i]) === sum(combos[j])){
-                      console.log("找到和相同的combo了，他们分别是");
-                      console.log(combos[i]);
-                      console.log(combos[j]);
+                      //console.log("找到和相同的combo了，他们分别是");
+                      //console.log(combos[i]);
+                      //console.log(combos[j]);
                       //eliminate duplicates
                       let pair1 = combos[i];
                       let pair2 = combos[j];
@@ -131,10 +131,10 @@
 
                       let b = 0, c = 0, cIndex = 0, is_subarray = false;
                       // Traverse both arrays simultaneously
-                      console.log("concat array长这样");
+        /*              console.log("concat array长这样");
                       console.log(concat);
                       console.log("origin array长这样");
-                      console.log(origin);
+                      console.log(origin);*/
                       while (b < origin.length && c < concat.length) {
                           // If element matches, increment both pointers
                           if (origin[b] === concat[c]) {
@@ -143,7 +143,7 @@
                               cIndex++;
                               // If concat array is completely traversed
                               if (c === concat.length){
-                                  console.log("is_subarray set to true");
+                                 // console.log("is_subarray set to true");
                                   is_subarray = true;
                               }
                           } else {
@@ -153,18 +153,22 @@
                               c = cIndex;
                           }
                       }
-                      console.log("is_subarrray?: " + is_subarray);
+                      //console.log("is_subarrray?: " + is_subarray);
                       if (is_same || is_subarray){
-                          pairs.push("第一组:");
-                          pairs.push(toLetter(combos[i]));  //11,12,13,1 = JQKA
-                          pairs.push("第二组:");
-                          pairs.push(toLetter(combos[j]));
-                          pairs.push("============");
+                          pairs.push("第一组:" + toLetter(combos[i]) + "\n第二组:" + toLetter(combos[j]) + "\n");
                       }
                   }
               }
           }
-          document.getElementById("output").value = pairs.join("\n");
+          //经社区大佬提醒，根据combo length优先排列最大化的情况
+          var sortedPairs = pairs.sort(function(a, b) {
+/*              console.log(a);
+              console.log(a.length);
+              console.log(b);
+              console.log(b.length);*/
+              return b.length - a.length;    // sort by length
+          });
+          document.getElementById("output").value = sortedPairs.join("============\n");
       }
 
       function toLetter(combo){
