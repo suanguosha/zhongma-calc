@@ -25,7 +25,7 @@
           arr = [];
           document.getElementById("output").style.display = "inline";
           let str = document.getElementById("input").value;
-          let pool = str.split(" ");
+          let pool = str.split("");
           pool.forEach(function(card) {
               if (card !== ''){
                   arr.push((card <= 13) ? parseInt(card): toValue(card));
@@ -162,12 +162,11 @@
           }
           //经社区大佬提醒，根据combo length优先排列最大化的情况
           var sortedPairs = pairs.sort(function(a, b) {
-/*              console.log(a);
-              console.log(a.length);
-              console.log(b);
-              console.log(b.length);*/
               return b.length - a.length;    // sort by length
           });
+          //将第一组数据复制
+          navigator.clipboard.writeText(sortedPairs[0]);
+          //将sortedPairs显示到output
           document.getElementById("output").value = sortedPairs.join("============\n");
       }
 
@@ -207,10 +206,31 @@
 </head>
 <body>
 <div id="inputArea">
-  <p>牌号请用空格隔开<br>JQKA用数字/字母都行</p>
+  <p>钟妈算牌器</p>
+  <p style="font-size: small">作者 LDY681 &trade;</p>
+  <p style="font-size: x-large">牌号不用隔开，自动复制结果</p>
+  <p style="font-size: medium">快捷键：` 重置输入框<br>ENTER计算</p>
   <textarea id="input" rows="2" cols="50"></textarea><br>
-  <button style="height: 40px;width: 60px" onclick="calculate()">计算</button><br>
+  <button id="jisuan" style="height: 40px;width: 60px" onclick="calculate()">计算</button><br>
   <textarea id="output" rows="20" cols="50" style="display:none;"></textarea><br>
 </div>
+<script>
+  //加入快捷键
+  var input = document.getElementById("input");
+  input.onkeypress = function(e) {
+  e = e || window.event;
+  if (e.keyCode === 13){  //key enter
+  e.preventDefault();
+  document.getElementById("jisuan").click();
+  }};
+  document.onkeypress = function(e) {
+      e = e || window.event;
+      if (e.keyCode === 96){  //key enter
+          e.preventDefault();
+          var input = document.getElementById('input');
+          input.value = '';
+          input.focus();
+      }};
+</script>
 </body>
 </html>
