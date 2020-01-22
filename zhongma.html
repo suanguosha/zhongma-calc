@@ -25,14 +25,38 @@
           arr = [];
           document.getElementById("output").style.display = "inline";
           let str = document.getElementById("input").value;
-          let pool = str.split("");
-          pool.forEach(function(card) {
-              if (card !== ''){
-                  arr.push((card <= 13) ? parseInt(card): toValue(card));
-              }
-          });
-          //console.log("original pool is");
-          //console.log(arr);
+          if (str.includes(" ")){
+              let pool = str.split(" ");
+              pool.forEach(function(card) {
+                if (card !== ''){
+                      arr.push((card <= 13) ? parseInt(card): toValue(card));
+                  }
+              });
+          }else if (str.includes("，")){
+              let pool = str.split("，");
+              pool.forEach(function(card) {
+                  if (card !== ''){
+                      arr.push((card <= 13) ? parseInt(card): toValue(card));
+                  }
+              });
+          }else if (str.includes(",")){
+              let pool = str.split(",");
+              pool.forEach(function(card) {
+                  if (card !== ''){
+                      arr.push((card <= 13) ? parseInt(card): toValue(card));
+                  }
+              });
+          }else{
+              let pool = str.split("");
+              pool.forEach(function(card) {
+                  if (card === "0"){
+                      arr[arr.length-1] = 10;
+                  }else if (card !== ''){
+                      arr.push((card <= 13) ? parseInt(card): toValue(card));
+                  }
+              });
+          }
+          console.log(arr);
           findCombos(arr);
       }
       //poker card letter to integer
@@ -206,10 +230,10 @@
 </head>
 <body>
 <div id="inputArea">
-  <p>钟妈算牌器</p>
-  <p style="font-size: small">作者 LDY681 &trade;</p>
-  <p style="font-size: x-large">牌号不用隔开，自动复制结果</p>
-  <p style="font-size: medium">快捷键：` 重置输入框<br>ENTER计算</p>
+  <p style="font-size: large">钟妈算牌器 LDY681 &trade;</p>
+  <p style="font-size: small">使用方法1：牌号不用隔开，11,12,13请用JQK</p>
+  <p style="font-size: small">使用方法2：牌号用空格/逗号隔开，数字字母双支持</p>
+  <p style="font-size: medium">快捷键：` 重置输入框 / ENTER计算<br>第一个结果会自动复制</p>
   <textarea id="input" rows="2" cols="50"></textarea><br>
   <button id="jisuan" style="height: 40px;width: 60px" onclick="calculate()">计算</button><br>
   <textarea id="output" rows="20" cols="50" style="display:none;"></textarea><br>
